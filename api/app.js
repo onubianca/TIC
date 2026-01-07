@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { db } from './config/firebaseConfig.js'; //II
+import { db } from './config/firebaseConfig.js'; 
 import path from 'path';
+import movieRoutes from './routes/movies.js';   //III
 
 const app = express();
 
@@ -14,18 +15,7 @@ app.use((req, res, next) => {
     next();
 });
 
-//II
-app.get('/movies', async(req, res) => {
-    try {
-        const snapshot = await db.collection('movies').get();
-        const movies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(`Found ${movies.length} movies`);
-        res.json({ movies });
-    }
-    catch (error) {
-        console.error('Error fetching movies:', error);
-        res.status(500).json({ message: 'Error fetching movies' });
-}});
+app.use('/movies', movieRoutes); //III
 
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: '../web' });
