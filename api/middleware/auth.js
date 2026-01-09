@@ -9,10 +9,10 @@ export function validateToken(req, res, next) {
             return res.status(401).json({ message: 'Access token missing' });
         }
     
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            req.user = user;
-            next();
-        });
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = user;
+        next();
+        
     } catch (error) {
         res.status(403).json({ message: 'Invalid token' });
     }   
