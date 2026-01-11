@@ -11,7 +11,7 @@
             </div>
         </form>
         <p class="link-text">
-            Don't have an account? <router-link to="/register">Register here</router-link>
+            You don't have an account? <router-link to="/register">Register here</router-link>
         </p>
     </div>
 </template>

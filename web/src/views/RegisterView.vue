@@ -11,7 +11,7 @@
             </div>
         </form>
         <p class="link-text">
-            Already have an account? <router-link to="/login">Login here</router-link>
+            You already have an account? <router-link to="/login">Login here</router-link>
         </p>
     </div>
 </template>
