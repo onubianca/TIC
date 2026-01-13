@@ -2,17 +2,29 @@ import {defineStore} from 'pinia';
 import {ref, computed} from 'vue';
 import axios from 'axios';
 
-const API_URL = 'https://localhost:3000';
+const API_URL = 'http://localhost:3000';
 
 export const useAuthStore = defineStore('auth', () => {
-    const user = ref(JSON.parse(localStorage.getItem('auth_user')) || null);
-    const token = ref(localStorage.getItem('auth_token'));
+    const storedUser = localStorage.getItem('auth_user');
+    let parsedUser = null;
+    try {
+        if(storedUser && storedUser !== 'undefined') {
+            parsedUser = JSON.parse(storedUser);
+        }
+    } catch (e) {
+        localStorage.removeItem('auth_user');
+    }
+    const user = ref(parsedUser);
+
+    const storedToken = localStorage.getItem('auth_token');
+    const token = ref(storedToken && storedToken !== 'undefined' ? storedToken : null);
+    
     const loading = ref(false); 
     const error = ref(null);
 
     const isAuthenticated = computed(() => !!token.value);
-    const isAdmin = computed(() => user.value && user.value.role === 'admin');
-    const isUser = computed(() => user.value && user.value.role === 'user');
+    const isAdmin = computed(() => user.value?.role === 'admin');
+    const isUser = computed(() => user.value?.role === 'user');
 
     if (token.value) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token.value}`;
@@ -20,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const register = async (email, password, name) => {
         loading.value = true;
-        error.value = '';
+        error.value = null;
         try {
             const response = await axios.post(`${API_URL}/auth/register`, {
                 email,
@@ -32,9 +44,9 @@ export const useAuthStore = defineStore('auth', () => {
             token.value = response.data.token;
 
             localStorage.setItem('auth_user', JSON.stringify(user.value));
-            localStorage.setItem('auth_token', authToken);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-
+            localStorage.setItem('auth_token', token.value);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token.value}`;
+            
             return true;
         } catch (err) {
             error.value = err.response?.data?.message || 'Registration failed';
@@ -46,7 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const login = async (email, password) => {
         loading.value = true;
-        error.value = '';
+        error.value = null;
         try {
             const response = await axios.post(`${API_URL}/auth/login`, {
                 email,

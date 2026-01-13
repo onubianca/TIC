@@ -31,7 +31,7 @@ const form = ref({
 
 const handleRegister = async () => {
     try {
-        await auth.register(form.value.name, form.value.email, form.value.password);
+        await auth.register(form.value.email, form.value.password, form.value.name);
         router.push('/');
     } catch (error) {
         console.error('Registration failed:', error);
