@@ -1,4 +1,4 @@
-async function fetchMovies() {
+/*async function fetchMovies() {
     try {
         const res = await fetch('http://localhost:3000/movies');
         const data = await res.json();
@@ -41,3 +41,4 @@ async function fetchMovies() {
 }
 
  fetchMovies(); 
+*/

@@ -5,6 +5,8 @@ import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue'; 
 import RegisterView from '@/views/RegisterView.vue';
 
+
+
 const routes = [    
     {
         path: '/',
@@ -29,6 +31,11 @@ const routes = [
             auth.isAuthenticated ? next('/') : next();
         }
     }
+   /* {
+        path:'/movie/:movieId',
+        name: 'MovieDetails',
+        component: MovieDetailsView,
+    }*/
 ];
 
 const router = createRouter({

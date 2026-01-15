@@ -1,3 +1,7 @@
 api/serviceAccount.json
 node_modules/
 .env
+.DS_Store
+api/.DS_Store
+web/.DS_Store
+node_modules/
