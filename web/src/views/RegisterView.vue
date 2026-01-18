@@ -1,20 +1,27 @@
 <template>
-    <div>
-        <h2>Register</h2>
-        <form @submit.prevent="handleRegister">
-            <div>
-                <input type="text" id="username" v-model="form.name" placeholder="Name" required />
-                <input type="email" id="email" v-model="form.email" placeholder="Email" required />
-                <input type="password" id="password" v-model="form.password" placeholder="Password" required />
-                <button type="submit" class="btn btn-dark btn-submit">Register</button>
-                <p v-if="authError" class="error">{{ authError }}</p>
-            </div>
+    <div class="modal-backdrop d-flex justify-content-center align-items-center">
+      <div class="modal-card p-4 bg-white rounded shadow" style="width: 400px; max-width: 90%"> 
+        <h3 class="text-center mb-3">Register</h3>  
+        <form @submit.prevent="handleRegister">  
+          <div class="mb-3">
+            <input type="text" v-model="form.name" class="form-control" placeholder="Name" required/>
+          </div>
+          <div class="mb-3">
+            <input type="email" v-model="form.email" class="form-control" placeholder="Email" required/>
+          </div>
+          <div class="mb-3">
+            <input type="password" v-model="form.password" class="form-control" placeholder="Password" required/>
+          </div>
+          <button type="submit" class="btn btn-dark w-100">Register</button>
         </form>
-        <p class="link-text">
-            You already have an account? <router-link to="/login">Login here</router-link>
+        <p class="text-center mt-3">
+          Already have an account?
+          <router-link to="/login">Login</router-link>
         </p>
+      </div>
     </div>
 </template>
+  
 
 <script setup>
 import {ref} from 'vue';
@@ -38,3 +45,15 @@ const handleRegister = async () => {
     }
 };
 </script>
+<style>
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1050;
+}
+
+</style>

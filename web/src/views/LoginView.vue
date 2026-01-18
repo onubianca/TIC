@@ -1,20 +1,24 @@
 <template>
-    <div>
-        <h1>Login</h1>
+    <div class="modal-backdrop d-flex justify-content-center align-items-center">
+      <div class="modal-card p-4 bg-white rounded shadow" style="width: 400px; max-width: 90%">
+        <h3 class="text-center mb-3">Login</h3>
         <form @submit.prevent="handleLogin">
-            <div>
-                <input type="email" id="email" v-model="form.email" placeholder="Email" required />
-                <input type="password" id="password" v-model="form.password" placeholder="Password" required />
-                <button type="submit" class="btn btn-dark btn-submit">Login</button>
-                <p v-if="authError" class="error">{{ authError }}</p>
-
-            </div>
+          <div class="mb-3">
+            <input type="email" v-model="form.email" class="form-control" placeholder="Email" required/>
+          </div>
+          <div class="mb-3">
+            <input type="password" v-model="form.password" class="form-control" placeholder="Password" required/>
+          </div>
+          <button type="submit" class="btn btn-dark w-100">Login</button>
         </form>
-        <p class="link-text">
-            You don't have an account? <router-link to="/register">Register here</router-link>
+        <p class="text-center mt-3">
+            You don't have an account?
+          <router-link to="/register">Register</router-link>
         </p>
+      </div>
     </div>
-</template>
+  </template>
+  
 
 <script setup>
 import {ref} from 'vue';
@@ -40,5 +44,14 @@ const handleLogin = async () => {
 </script>
 
 <style>
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1050;
+}
 
 </style>
