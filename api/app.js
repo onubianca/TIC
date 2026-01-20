@@ -1,14 +1,15 @@
 import express from 'express';
 import cors from 'cors';
-import dontev from 'dotenv';
+import dotenv from 'dotenv';
 import { db } from './config/firebaseConfig.js'; 
 import path from 'path';
 import movieRoutes from './routes/movies.js';   
-import authRoutes from './routes/auth.js';     
+import authRoutes from './routes/auth.js';   
+import watchlistRoutes from './routes/watchlist.js';  
 
 
 const app = express();
-dontev.config();
+dotenv.config();
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 
 app.use('/movies', movieRoutes); 
 app.use('/auth', authRoutes);
+app.use('/watchlist', watchlistRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: '../web' });

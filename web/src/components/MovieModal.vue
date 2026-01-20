@@ -33,10 +33,11 @@
             </div>
             <div class="mt-3 d-flex flex-wrap gap-2">
               <button v-if="auth.isUser" class="btn btn-dark" @click="addToWatchlist">Watchlist</button>
-              <button v-if="auth.isAdmin" class="btn btn-dark" @click="createMovie">Add</button>
-              <button v-if="auth.isAdmin" class="btn btn-dark" @click="UpdateMovie">Edit</button>
-              <button v-if="auth.isAdmin" class="btn btn-dark" @click="DeleteMovie">Delete</button>
-              <button class="btn btn-dark self-align-end" @click="$emit('close')">Close</button>
+              <button v-if="auth.isAdmin" class="btn btn-dark" @click="updateMovie">Edit</button>
+              <button v-if="auth.isAdmin" class="btn btn-dark" @click="deleteMovie">Delete</button>
+              <div class="d-flex flex-grow-1 justify-content-end">
+                <button class="btn btn-dark self-align-end" @click="$emit('close')">Close</button>
+              </div>
             </div>
           </div>
         </div>
@@ -47,6 +48,7 @@
   <script setup>
   import { useAuthStore } from '../stores/auth';
   import { useRouter } from 'vue-router';
+  import axios from 'axios';
   
   const props = defineProps({ movie: Object });
   const emit = defineEmits(['close']);
@@ -63,21 +65,25 @@
   const actors = props.movie.actors || [];
   
   const addToWatchlist = async () => {
-    await fetch(`/watchlist`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ movieId: props.movie.id }),
-    });
-    alert('Movie added to watchlist!');
+    try{
+        console.log('Token:', auth.token);
+
+        await axios.post('http://localhost:3000/watchlist', { movieId: props.movie.movieId }, {headers: { Authorization: `Bearer ${auth.token}` }});
+        alert('Movie added to watchlist!');
+    } catch (error) {
+        console.error('Failed to add movie to watchlist:', error.response);
+        alert(error.response?.data?.message || 'Failed to add movie to watchlist.');
+    }
+    
   };
   
-  const UpdateMovie = async () => {
-    router.push({ name: 'EditMovie', params: { id: props.movie.id } });
+  const updateMovie = async () => {
+    router.push({ name: 'EditMovie', params: { id: props.movie.movieId } });
   };
   
-  const DeleteMovie = async () => {
+  const deleteMovie = async () => {
     if (confirm('Are you sure you want to delete this movie?')) {
-      await fetch(`/movies/${props.movie.id}`, { method: 'DELETE' });
+      await axios.delete(`http://localhost:3000/movies/${props.movie.movieId}`);
       alert('Movie deleted successfully!');
       emit('close');
     }
