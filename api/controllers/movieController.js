@@ -3,9 +3,22 @@ import {Movie} from '../models/Movie.js';
 
 export async function getMovies(req, res) {
     try {
-        const {genre} = req.query;
-        const movies = await Movie.findAll({genre});
-        res.json(movies);
+        const {genre, page, limit} = req.query;
+
+        const pageNumber = parseInt(page) || 1;
+        const pageSize = parseInt(limit) || 3;
+        const offset = (pageNumber - 1) * pageSize;
+
+        let allMovies;
+        if (genre) {
+            allMovies = await Movie.findAll({ genre });
+        } else {
+            allMovies = await Movie.findAll();
+        }
+        
+        const paginatedMovies = allMovies.slice(offset, offset + pageSize);
+
+        res.json(paginatedMovies);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching movies' });
     }
@@ -30,7 +43,7 @@ export async function createMovie(req, res) {
     try {
         const movieId = await Movie.create({
             ...req.body,
-            createdBy: req.user.userId
+            createdBy: req.user.userID
         });
         res.status(201).json({ movieId });
     } catch (error) {
