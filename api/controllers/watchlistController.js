@@ -24,14 +24,22 @@ export async function addToWatchlist(req, res) {
 export async function getWatchlist(req, res) {
     try {
         const userId = req.user.userID;
-        const watchlistDoc = await db.collection('watchlists').doc(userId).get();
-
-        if (!watchlistDoc.exists) {
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (!userDoc.exists) {
             return res.status(200).json({ movies: [] });
         }
 
-        const watchlistData = watchlistDoc.data();
-        res.status(200).json({ movies: watchlistData.movies || [] });
+        const watchlist = userDoc.data().watchlist || [];
+        const mpvies = [];
+
+        for (const movieId of watchlist) {
+            const movieDoc = await db.collection('movies').doc(movieId).get();
+            if (movieDoc.exists) {
+                mpvies.push({ id: movieDoc.id, title: movieDoc.data().title });
+            }
+        }
+
+       res.status(200).json({ movies });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to fetch watchlist' });

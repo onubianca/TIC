@@ -9,8 +9,8 @@
             </div>
             <div class="d-flex ms-auto me-3">
                 <router-link v-if="!currentUser" to="/login" class="btn btn-outline-dark me-2">Login</router-link>
-                <button v-if="currentUser && currentUser.role === 'admin'" class="btn btn-dark">Add Movie</button>
-                <button v-if="currentUser && currentUser.role === 'user'" class="btn btn-dark">Watchlist</button>
+                <button v-if="currentUser && currentUser.role === 'admin'" class="btn btn-dark" @click="openAddMovieView">Add Movie</button>
+                <button v-if="currentUser && currentUser.role === 'user'" class="btn btn-dark" @click="openWatchlistView">My Watchlist</button>
                 <button v-if="currentUser" @click="handleLogout" class="btn btn-outline-dark ms-2">Logout</button>
             </div>
 
@@ -23,6 +23,8 @@
             </div>    
             <MovieModal v-if="selectedMovie" :movie="selectedMovie" @close="selectedMovie = null" />
         </div>
+        <AddMovieView v-if="showAddMovieView" @close="showAddMovieView = false; refreshPage()" />
+        <WatchlistView v-if="showWatchlistView" @close="showWatchlistView = false" />
     </div>
     <footer class="bg-dark text-center text-light py-3 mt-5 shadow-sm">
                 <div class="container">
@@ -38,7 +40,10 @@ import {useRouter} from 'vue-router';
 import logo from '../assets/site_logo.png';
 import MovieCard from '../components/MovieCard.vue';
 import MovieModal from '../components/MovieModal.vue';
+import WatchlistView from '../views/WatchlistView.vue';
+import AddMovieView from '../views/AddMovieView.vue';
 import axios from 'axios';
+
 
 const movies = ref([]);
 const selectedMovie = ref(null);
@@ -51,6 +56,11 @@ const auth = useAuthStore();
 const currentUser = computed(() => auth.user);
 const router = useRouter();
 
+const showWatchlistView = ref(false);
+const showAddMovieView = ref(false);
+
+const lastDocId = ref(null);  
+
 const loadMovies = async () => {
     if (loading.value) 
         return;
@@ -58,13 +68,15 @@ const loadMovies = async () => {
     try {
         const response = await axios.get(`${API_URL}/movies`, {
             params: {
-                page: page.value,
-                limit: limit
+                limit: limit,
+                lastDocId: lastDocId.value
             }
         });
-        const data = response.data;
-        if(data.length){       
+        const data = response.data.movies;
+        const newLastDocId = response.data.lastDocId;
+        if(data.length && newLastDocId.length > 0){       
             movies.value.push(...data);
+            lastDocId.value = newLastDocId;
             page.value += 1;
      }
     } catch (error) {
@@ -102,7 +114,19 @@ const handleLogout = () => {
 const refreshPage = () => {
     page.value = 1;
     movies.value = [];
+    loading.value = false;
     loadMovies();
+};
+
+const openWatchlistView = () => {
+    if(!currentUser.value){
+        alert('Please log in to view your watchlist.');
+        return;
+    }
+    showWatchlistView.value = true;
+};
+const openAddMovieView = () => {
+    showAddMovieView.value = true;
 };
 </script>
 

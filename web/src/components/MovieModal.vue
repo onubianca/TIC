@@ -33,7 +33,7 @@
             </div>
             <div class="mt-3 d-flex flex-wrap gap-2">
               <button v-if="auth.isUser" class="btn btn-dark" @click="addToWatchlist">Watchlist</button>
-              <button v-if="auth.isAdmin" class="btn btn-dark" @click="updateMovie">Edit</button>
+              <button v-if="auth.isAdmin" class="btn btn-dark" @click="openEditMovie">Edit</button>
               <button v-if="auth.isAdmin" class="btn btn-dark" @click="deleteMovie">Delete</button>
               <div class="d-flex flex-grow-1 justify-content-end">
                 <button class="btn btn-dark self-align-end" @click="$emit('close')">Close</button>
@@ -42,58 +42,69 @@
           </div>
         </div>
       </div>
+      <EditMovieView v-if = "showEdit" :movie = "movie" @close = "showEdit = false" @updated="emitUpdate" />
     </div>
   </template>
   
   <script setup>
-  import { useAuthStore } from '../stores/auth';
-  import { useRouter } from 'vue-router';
-  import axios from 'axios';
+    import { ref, computed } from 'vue';
+    import { useAuthStore } from '../stores/auth';
+    import { useRouter } from 'vue-router';
+    import axios from 'axios';
+    import EditMovieView from '../views/EditMovieView.vue';
   
-  const props = defineProps({ movie: Object });
-  const emit = defineEmits(['close']);
-  
-  const auth = useAuthStore();
-  const router = useRouter();
-  
-  const posterFallback = 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-thumbnail-graphic-illustration-vector-png-image_40966590.jpg';
-  
-  const posterError = (event) => {
-    event.target.src = posterFallback;
-  };
-  
-  const actors = props.movie.actors || [];
-  
-  const addToWatchlist = async () => {
-    try{
-        console.log('Token:', auth.token);
-
-        await axios.post('http://localhost:3000/watchlist', { movieId: props.movie.movieId }, {headers: { Authorization: `Bearer ${auth.token}` }});
-        alert('Movie added to watchlist!');
-    } catch (error) {
-        console.error('Failed to add movie to watchlist:', error.response);
-        alert(error.response?.data?.message || 'Failed to add movie to watchlist.');
-    }
+    const props = defineProps({ movie: Object });
+    const emit = defineEmits(['close', 'updated']);
     
-  };
+    const auth = useAuthStore();
+    const router = useRouter();
+    
+    const posterFallback = 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-thumbnail-graphic-illustration-vector-png-image_40966590.jpg';
+    
+    const posterError = (event) => {
+      event.target.src = posterFallback;
+    };
+    
+    const actors = computed(() => props.movie.actors || []);
+    
+    const addToWatchlist = async () => {
+      try{
+          console.log('Token:', auth.token);
   
-  const updateMovie = async () => {
-    router.push({ name: 'EditMovie', params: { id: props.movie.movieId } });
-  };
+          await axios.post('http://localhost:3000/watchlist', { movieId: props.movie.movieId }, {headers: { Authorization: `Bearer ${auth.token}` }});
+          alert('Movie added to watchlist!');
+      } catch (error) {
+          console.error('Failed to add movie to watchlist:', error.response);
+          alert(error.response?.data?.message || 'Failed to add movie to watchlist.');
+      }
+      
+    };
+    
+    const showEdit = ref(false);
+    const openEditMovie = () => {
+          showEdit.value = true;
+      };
+    
+    const deleteMovie = async () => {
+      if (confirm('Are you sure you want to delete this movie?')) {
+        await axios.delete(`http://localhost:3000/movies/${props.movie.movieId}`,{
+            headers: { Authorization: `Bearer ${auth.token}` }
+        });
+        alert('Movie deleted successfully!');
+        emit('close');
+      }
+    };
   
-  const deleteMovie = async () => {
-    if (confirm('Are you sure you want to delete this movie?')) {
-      await axios.delete(`http://localhost:3000/movies/${props.movie.movieId}`);
-      alert('Movie deleted successfully!');
-      emit('close');
-    }
-  };
-  
-  const createMovie = () => {
-    router.push({ name: 'CreateMovie' });
-  };
-  </script>
-  
+    const emitUpdate = () => {
+      emit('updated');
+      showEdit.value = false;
+    };
+    
+    const createMovie = () => {
+      router.push({ name: 'CreateMovie' });
+    };
+    </script>
+
   <style>
   .modal-backdrop {
     position: fixed;
