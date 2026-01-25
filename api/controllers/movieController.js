@@ -3,22 +3,14 @@ import {Movie} from '../models/Movie.js';
 
 export async function getMovies(req, res) {
     try {
-        const {genre, page, limit} = req.query;
+        const {limit, lastDocId} = req.query;
 
-        const pageNumber = parseInt(page) || 1;
-        const pageSize = parseInt(limit) || 3;
-        const offset = (pageNumber - 1) * pageSize;
-
-        let allMovies;
-        if (genre) {
-            allMovies = await Movie.findAll({ genre });
-        } else {
-            allMovies = await Movie.findAll();
-        }
-        
-        const paginatedMovies = allMovies.slice(offset, offset + pageSize);
-
-        res.json(paginatedMovies);
+        const {movies, lastDocId: newLastDocId} = await Movie.findAll({ 
+            limit: Number(limit) || 3,
+            lastDocId: lastDocId || null
+        });
+      
+        res.json({ movies, lastDocId: newLastDocId });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching movies' });
     }
@@ -30,6 +22,7 @@ export async function getMovieById(req, res) {
         if (!movie) return res.status(404).json({ error: 'Movie not found' });
         res.json(movie);
     } catch (error) {
+        console.error('Detailed error fetching movies:', error); 
         res.status(500).json({ error: 'Failed to fetch movie' });
     }   
 }

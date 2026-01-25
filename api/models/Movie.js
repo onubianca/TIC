@@ -4,15 +4,29 @@ const moviesCollection = db.collection('movies');
 
 export const Movie = {
 
-    findAll: async (filters = {}) => {  
-        let query = moviesCollection;
+    findAll: async ({limit = 3, lastDocId} = {}) => {  
+        try{
+            let query = moviesCollection.orderBy('createdAt', 'desc').limit(limit);
 
-        if (filters.genre) {
-            query = query.where('genres', 'array-contains', filters.genre);
+            if (lastDocId) {
+                const lastDocSnap = await moviesCollection.doc(lastDocId).get();
+                if (lastDocSnap.exists) {
+                    query = query.startAfter(lastDocSnap);
+                }
+            }
+
+            const snapshot = await query.get();
+            const movies = snapshot.docs.map(doc => ({ movieId: doc.id, ...doc.data() }));
+            const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+            return {
+                movies,
+                lastDocId: lastDoc ? lastDoc.id : null
+            };
+        }   
+        catch (error){
+            console.error('Error in findAll:', error);
+            throw error;
         }
-
-        const snapshot = await query.get();
-        return snapshot.docs.map(doc => ({ movieId: doc.id, ...doc.data() }));
     },
 
     findById: async (movieId) => {
