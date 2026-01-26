@@ -29,15 +29,18 @@ export async function getWatchlist(req, res) {
             return res.status(200).json({ movies: [] });
         }
 
-        const watchlist = userDoc.data().watchlist || [];
-        const mpvies = [];
-
-        for (const movieId of watchlist) {
-            const movieDoc = await db.collection('movies').doc(movieId).get();
-            if (movieDoc.exists) {
-                mpvies.push({ id: movieDoc.id, title: movieDoc.data().title });
-            }
+        const watchlistIds = userDoc.data().watchlist || [];
+        if(watchlistIds.length === 0) {
+            return res.status(200).json({ movies: [] });
         }
+
+        const moviesPromises = watchlistIds.map(id =>
+            db.collection('movies').doc(id).get()
+        );
+
+        const moviesDocs = await Promise.all(moviesPromises);
+
+        const movies = moviesDocs.filter(doc => doc.exists).map(doc => ({ id: doc.id, title: doc.data().title}));
 
        res.status(200).json({ movies });
     } catch (error) {

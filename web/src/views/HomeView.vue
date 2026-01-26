@@ -1,7 +1,7 @@
 <template>
     <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="d-flex align-items-center m-2">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <div class="d-flex align-items-center m-1">
                 <a class="navbar-brand d-flex align-items-center" href="#">
                     <img :src="logo" alt="StarList Logo" width="60" height="60" class="d-inline-block align-text-top ms-3" @click="refreshPage">
                     <span class="fw-bold fst-italic fs-3 ms-2">StarList Review</span>
@@ -16,7 +16,7 @@
 
         </nav>
     </div>
-    <div class="container mt-4">
+    <div class="container mt-5">
         <div class="row g-3">
             <div class="col-12 col-md-6 col-xl-4 d-flex mb-2" v-for="movie in movies" :key="movie.movieId" >
                 <MovieCard :movie="movie" @view-details="selectedMovie = $event" class="w-100"/>
