@@ -3,7 +3,7 @@
       <div class="modal-card p-4 bg-white rounded shadow" style="width: 50%; max-width: 90%"> 
         <h3 class="text-center mb-3">My Watchlist</h3>  
         <ul class="list-group">
-            <li v-for="movie in watchlist" :key="movie.movieId" class="list-group-item">{{ movie.title }}</li>
+            <li v-for="movie in watchlist" :key="movie.id" class="list-group-item">{{ movie.title }}</li>
             <li v-if="watchlist.length === 0" class="list-group-item">My watchlist is empty</li>
         </ul>
         <button class="btn btn-dark self-align-end mt-3" @click="$emit('close')">Close</button>

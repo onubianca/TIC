@@ -47,6 +47,7 @@ const form = ref({
     year: null,
     runtime: null,
     genres: '',
+    actors: '',
     description: '',
     posterUrl: ''
 });

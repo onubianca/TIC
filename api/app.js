@@ -1,17 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { db } from './config/firebaseConfig.js'; 
+import { db } from './config/firebaseConfig.js';
 import path from 'path';
-import movieRoutes from './routes/movies.js';   
-import authRoutes from './routes/auth.js';   
-import watchlistRoutes from './routes/watchlist.js';  
+import movieRoutes from './routes/movies.js';
+import authRoutes from './routes/auth.js';
+import watchlistRoutes from './routes/watchlist.js';
 
 
 const app = express();
 dotenv.config();
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/movies', movieRoutes); 
+app.use('/movies', movieRoutes);
 app.use('/auth', authRoutes);
 app.use('/watchlist', watchlistRoutes);
 
