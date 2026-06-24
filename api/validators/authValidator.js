@@ -1,4 +1,4 @@
-import {body} from 'express-validator';
+import { body } from 'express-validator';
 
 export const registerValidator = [
     body('email').isEmail().normalizeEmail().withMessage('Invalid email address'),

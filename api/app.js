@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { db } from './config/firebaseConfig.js';
 import path from 'path';
 import movieRoutes from './routes/movies.js';
@@ -9,7 +9,6 @@ import watchlistRoutes from './routes/watchlist.js';
 
 
 const app = express();
-dotenv.config();
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());

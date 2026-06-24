@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
+import { admin } from '../config/firebaseConfig.js';
 
-export function validateToken(req, res, next) {
-    try{
+export async function validateToken(req, res, next) {
+    try {
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(' ')[1];
     
@@ -9,12 +9,20 @@ export function validateToken(req, res, next) {
             return res.status(401).json({ message: 'Access token missing' });
         }
     
-        const user = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = user;
-        next();
+        // Verify the ID token using Firebase Admin SDK
+        const decodedToken = await admin.auth().verifyIdToken(token);
         
+        // Map to req.user for compatibility
+        req.user = {
+            userID: decodedToken.uid,
+            email: decodedToken.email,
+            role: decodedToken.role || 'user' // Retrieve role from custom claims
+        };
+        
+        next();
     } catch (error) {
-        res.status(403).json({ message: 'Invalid token' });
+        console.error('Token verification failed:', error);
+        res.status(403).json({ message: 'Invalid or expired token' });
     }   
 }
 
