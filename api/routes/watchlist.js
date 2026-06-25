@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get('/', validateToken, watchlistController.getWatchlist);
 router.post('/', validateToken, watchlistController.addToWatchlist);
+router.delete('/', validateToken, watchlistController.removeFromWatchlist);
 
 export default router;

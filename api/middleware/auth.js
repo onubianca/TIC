@@ -9,14 +9,14 @@ export async function validateToken(req, res, next) {
             return res.status(401).json({ message: 'Access token missing' });
         }
     
-        // Verify the ID token using Firebase Admin SDK
+        // Verify the Firebase ID token using Firebase Admin SDK
         const decodedToken = await admin.auth().verifyIdToken(token);
         
-        // Map to req.user for compatibility
+        // Bind claims and user ID to req.user for compatibility with downstream controllers
         req.user = {
             userID: decodedToken.uid,
             email: decodedToken.email,
-            role: decodedToken.role || 'user' // Retrieve role from custom claims
+            role: decodedToken.role || 'user' // Custom claim role defaults to 'user'
         };
         
         next();

@@ -5,6 +5,5 @@ import {registerValidator, loginValidator} from '../validators/authValidator.js'
 const router = express.Router();    
 
 router.post('/register', registerValidator, register);
-router.post('/login', loginValidator, login);
 
 export default router;

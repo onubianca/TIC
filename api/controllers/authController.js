@@ -9,7 +9,7 @@ export async function register(req, res) {
 
     try {
         const { email, password, name } = req.body;
-        const role = req.body.role || 'user';
+        const role = 'user';
 
         // 1. Create user in Firebase Authentication
         const userRecord = await admin.auth().createUser({
