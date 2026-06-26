@@ -10,6 +10,7 @@
             <input type="password" v-model="form.password" class="form-control" placeholder="Password" required/>
           </div>
           <button type="submit" class="btn btn-dark w-100">Login</button>
+          <p v-if="errorMsg" class="text-danger text-center mt-2">{{ errorMsg }}</p>
         </form>
         <p class="text-center mt-3">
             You don't have an account?
@@ -31,6 +32,7 @@ const form = ref({
     email: '',
     password: ''
 });
+const errorMsg = ref('');
 
 const handleLogin = async () => {
     try {
@@ -38,6 +40,7 @@ const handleLogin = async () => {
         router.push('/');
     } catch (error) {
         console.error('Login failed:', error);
+        errorMsg.value = 'Invalid email or password.';
     }
 };
 

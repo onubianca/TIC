@@ -13,6 +13,7 @@
             <input type="password" v-model="form.password" class="form-control" placeholder="Password" required/>
           </div>
           <button type="submit" class="btn btn-dark w-100">Register</button>
+          <p v-if="errorMsg" class="text-danger text-center mt-2">{{ errorMsg }}</p>
         </form>
         <p class="text-center mt-3">
           Already have an account?
@@ -35,6 +36,7 @@ const form = ref({
     email: '',
     password: ''
 });
+const errorMsg = ref('');
 
 const handleRegister = async () => {
     try {
@@ -42,6 +44,7 @@ const handleRegister = async () => {
         router.push('/');
     } catch (error) {
         console.error('Registration failed:', error);
+        errorMsg.value = error || 'Registration failed.';
     }
 };
 </script>

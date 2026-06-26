@@ -29,6 +29,7 @@
             </div>
           <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-dark me-5">Save Changes</button>
+            <p v-if="errorMsg" class="text-danger text-center mt-2">{{ errorMsg }}</p>
             <button class="btn btn-dark self-align-end ms-5" @click="$emit('close')">Close</button>  
         </div>
         </form>
@@ -55,6 +56,7 @@ const form = ref({
     description: '',
     posterUrl: ''
 });
+const errorMsg = ref('');
 
 watch(() => props.movie, (newMovie) => {
     if (newMovie) {
@@ -92,8 +94,8 @@ const handleEditMovie = async () => {
         emit('updated');
         emit('close');
         } catch (error) {
-        console.error('Failed to update movie:', error);
-        alert(error.response?.data?.message || 'Failed to update movie.');
+            console.error('Failed to update movie:', error);
+            errorMsg.value = error.response?.data?.message || 'Failed to update movie.';
     }
 };
 </script>

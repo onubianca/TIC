@@ -29,6 +29,7 @@
             </div>
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-dark">Add Movie</button>
+                <p v-if="errorMsg" class="text-danger text-center mt-2">{{ errorMsg }}</p>
                 <button class="btn btn-dark" @click="$emit('close')">Close</button>  
             </div>
         </form>
@@ -51,6 +52,7 @@ const form = ref({
     description: '',
     posterUrl: ''
 });
+const errorMsg = ref('');
 
 const handleAddMovie = async () => {
     try {
@@ -69,8 +71,8 @@ const handleAddMovie = async () => {
         emit('added', response.data);
         emit('close');
         } catch (error) {
-        console.error('Failed to add movie:', error);
-        alert(error.response?.data?.message || 'Failed to add movie.');
+            console.error('Failed to add movie:', error);
+            errorMsg.value = error.response?.data?.message || 'Failed to add movie.';
     }
 };
 
