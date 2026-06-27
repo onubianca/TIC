@@ -12,30 +12,7 @@ const routes = [
         path: '/',
         name: 'Home',
         component: HomeView
-    },
-    {
-        path: '/login',
-        name: 'Login',
-        component: LoginView,
-        beforeEnter: (to, from, next) => {
-            const auth= useAuthStore();
-            auth.isAuthenticated ? next('/') : next();
-        }
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        component: RegisterView,
-        beforeEnter: (to, from, next) => {
-            const auth = useAuthStore();
-            auth.isAuthenticated ? next('/') : next();
-        }
     }
-   /* {
-        path:'/movie/:movieId',
-        name: 'MovieDetails',
-        component: MovieDetailsView,
-    }*/
 ];
 
 const router = createRouter({

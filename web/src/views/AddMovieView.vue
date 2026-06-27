@@ -40,6 +40,8 @@
 <script setup>
 import {ref} from 'vue';
 import axios from 'axios';
+import {useAuthStore} from '../stores/auth';
+const auth = useAuthStore();
 
 const emit = defineEmits(['movie-added']);
 const form = ref({
@@ -62,13 +64,14 @@ const handleAddMovie = async () => {
             year: form.value.year,
             runtime: form.value.runtime,
             genres: form.value.genres.split(',').map(genre => genre.trim()),
-            actors: form.value.actors.split(',').map(actor => actor.trim()),
+            actors: form.value.actors.split(',').map(actor => ({ name: actor.trim() })),
             description: form.value.description,
             posterUrl: form.value.posterUrl
         };
-        const response = await axios.post('http://localhost:3000/movies', playload);
-        alert('Movie added successfully!');
-        emit('added', response.data);
+        const response = await axios.post('http://localhost:3000/movies', playload, {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        });
+        emit('movie-added', response.data);
         emit('close');
         } catch (error) {
             console.error('Failed to add movie:', error);

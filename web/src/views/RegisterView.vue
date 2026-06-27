@@ -17,7 +17,7 @@
         </form>
         <p class="text-center mt-3">
           Already have an account?
-          <router-link to="/login">Login</router-link>
+          <a href="#" @click.prevent="emit('go-login')">Login</a>
         </p>
       </div>
     </div>
@@ -37,11 +37,12 @@ const form = ref({
     password: ''
 });
 const errorMsg = ref('');
+const emit = defineEmits(['close', 'go-login']);
 
 const handleRegister = async () => {
     try {
         await auth.register(form.value.email, form.value.password, form.value.name);
-        router.push('/');
+        emit('close');
     } catch (error) {
         console.error('Registration failed:', error);
         errorMsg.value = error || 'Registration failed.';

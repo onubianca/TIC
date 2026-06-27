@@ -14,7 +14,7 @@
         </form>
         <p class="text-center mt-3">
             You don't have an account?
-          <router-link to="/register">Register</router-link>
+            <a href="#" @click.prevent="emit('go-register')">Register</a>
         </p>
       </div>
     </div>
@@ -33,11 +33,12 @@ const form = ref({
     password: ''
 });
 const errorMsg = ref('');
+const emit = defineEmits(['close', 'go-register']);
 
 const handleLogin = async () => {
     try {
         await auth.login(form.value.email, form.value.password);
-        router.push('/');
+        emit('close');
     } catch (error) {
         console.error('Login failed:', error);
         errorMsg.value = 'Invalid email or password.';
