@@ -1,8 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { db } from './config/firebaseConfig.js';
-import path from 'path';
 import movieRoutes from './routes/movies.js';
 import authRoutes from './routes/auth.js';
 import watchlistRoutes from './routes/watchlist.js';

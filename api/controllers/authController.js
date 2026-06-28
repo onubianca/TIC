@@ -47,10 +47,3 @@ export async function register(req, res) {
         res.status(500).json({ message: error.message || 'Registration failed' });
     }
 }
-
-// Deprecate backend login; frontend will authenticate directly with Firebase SDK
-export async function login(req, res) {
-    res.status(405).json({ 
-        message: 'Login must be performed directly on the client using the Firebase Web SDK.' 
-    });
-}

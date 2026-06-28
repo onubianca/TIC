@@ -49,7 +49,6 @@
   <script setup>
     import { ref, computed } from 'vue';
     import { useAuthStore } from '../stores/auth';
-    import { useRouter } from 'vue-router';
     import axios from 'axios';
     import EditMovieView from '../views/EditMovieView.vue';
   
@@ -57,7 +56,6 @@
     const emit = defineEmits(['close', 'updated']);
     
     const auth = useAuthStore();
-    const router = useRouter();
     
     const posterFallback = 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-thumbnail-graphic-illustration-vector-png-image_40966590.jpg';
     
@@ -100,9 +98,6 @@
       showEdit.value = false;
     };
     
-    const createMovie = () => {
-      router.push({ name: 'CreateMovie' });
-    };
     </script>
 
   <style>

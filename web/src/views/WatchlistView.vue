@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import {ref, onMounted, onUnmounted} from 'vue';
+import {ref, onMounted} from 'vue';
 import { useAuthStore } from '../stores/auth';
 import axios from 'axios';
 

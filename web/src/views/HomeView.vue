@@ -38,7 +38,6 @@
 <script setup>
 import {ref, computed, onMounted, onUnmounted} from 'vue';
 import {useAuthStore} from '../stores/auth';
-import {useRouter} from 'vue-router';
 import logo from '../assets/site_logo.png';
 import MovieCard from '../components/MovieCard.vue';
 import MovieModal from '../components/MovieModal.vue';
@@ -58,7 +57,6 @@ const API_URL = 'http://localhost:3000';
 
 const auth = useAuthStore();
 const currentUser = computed(() => auth.user);
-const router = useRouter();
 
 const showWatchlistView = ref(false);
 const showAddMovieView = ref(false);
@@ -107,10 +105,6 @@ onMounted(async () => {
 onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
 });
-
-const openMovieModal = (movie) => {
-    selectedMovie.value = movie;
-};
 
 const handleLogout = () => {
     auth.logout();
