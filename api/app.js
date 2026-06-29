@@ -2,9 +2,6 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import movieRoutes from './routes/movies.js';
-import authRoutes from './routes/auth.js';
-import watchlistRoutes from './routes/watchlist.js';
-
 
 const app = express();
 
@@ -18,8 +15,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/movies', movieRoutes);
-app.use('/auth', authRoutes);
-app.use('/watchlist', watchlistRoutes);
 
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: '../web' });

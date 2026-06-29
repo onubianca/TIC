@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import axios from 'axios';
 import { auth } from '../firebase';
 import { 
     signInWithEmailAndPassword, 
-    signInWithCustomToken, 
+    createUserWithEmailAndPassword,
     signOut, 
     onAuthStateChanged 
 } from 'firebase/auth';
@@ -12,7 +11,6 @@ import {
 const API_URL = 'http://localhost:3000';
 
 export const useAuthStore = defineStore('auth', () => {
-    // Pre-initialize from localStorage for instantaneous UI rendering
     const storedUser = localStorage.getItem('auth_user');
     let parsedUser = null;
     try {
@@ -32,9 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const isAuthenticated = computed(() => !!token.value);
     const isAdmin = computed(() => user.value?.role === 'admin');
-    const isUser = computed(() => user.value?.role === 'user');
 
-    // Helper to set token and axios headers
     const setToken = (newToken) => {
         token.value = newToken;
         if (newToken) {
@@ -46,12 +42,10 @@ export const useAuthStore = defineStore('auth', () => {
         }
     };
 
-    // Initialize axios header if token exists from localStorage
     if (token.value) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token.value}`;
     }
 
-    // Listen to Firebase Auth state changes to keep session verified and in-sync
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
             const idToken = await firebaseUser.getIdToken(true);
@@ -72,22 +66,14 @@ export const useAuthStore = defineStore('auth', () => {
         }
     });
 
-    const register = async (email, password, name, role = 'user') => {
+    const register = async (email, password) => {
         loading.value = true;
         error.value = null;
         try {
-            const response = await axios.post(`${API_URL}/auth/register`, {
-                email,
-                password,
-                name,
-                role
-            });
-  
-            const { customToken } = response.data;
-            await signInWithCustomToken(auth, customToken);
+            await createUserWithEmailAndPassword(auth, email, password);
             return true;
         } catch (err) {
-            error.value = err.response?.data?.message || 'Registration failed';
+            error.value = err.message || 'Registration failed';
             throw error.value;
         } finally {
             loading.value = false;
@@ -122,8 +108,7 @@ export const useAuthStore = defineStore('auth', () => {
         loading,
         error,
         isAuthenticated,
-        isAdmin,    
-        isUser,
+        isAdmin,
         register,
         login,
         logout,

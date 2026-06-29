@@ -10,7 +10,6 @@
             <div class="d-flex ms-auto me-3">
                 <button v-if="!currentUser" class="btn btn-outline-dark me-2" @click="showLoginView = true">Login</button>
                 <button v-if="currentUser && currentUser.role === 'admin'" class="btn btn-dark" @click="openAddMovieView">Add Movie</button>
-                <button v-if="currentUser && currentUser.role === 'user'" class="btn btn-dark" @click="openWatchlistView">My Watchlist</button>
                 <button v-if="currentUser" @click="handleLogout" class="btn btn-outline-dark ms-2">Logout</button>
             </div>
 
@@ -24,7 +23,6 @@
             <MovieModal v-if="selectedMovie" :movie="selectedMovie" @close="selectedMovie = null" />
         </div>
         <AddMovieView v-if="showAddMovieView" @close="showAddMovieView = false; refreshPage()" />
-        <WatchlistView v-if="showWatchlistView" @close="showWatchlistView = false" />
         <LoginView v-if="showLoginView" @close="showLoginView = false" @go-register="showLoginView = false; showRegisterView = true" />
         <RegisterView v-if="showRegisterView" @close="showRegisterView = false" @go-login="showRegisterView = false; showLoginView = true" />
     </div>
@@ -41,7 +39,6 @@ import {useAuthStore} from '../stores/auth';
 import logo from '../assets/site_logo.png';
 import MovieCard from '../components/MovieCard.vue';
 import MovieModal from '../components/MovieModal.vue';
-import WatchlistView from '../views/WatchlistView.vue';
 import AddMovieView from '../views/AddMovieView.vue';
 import LoginView from './LoginView.vue';
 import RegisterView from './RegisterView.vue';
@@ -118,13 +115,6 @@ const refreshPage = () => {
     loadMovies();
 };
 
-const openWatchlistView = () => {
-    if(!currentUser.value){
-        alert('Please log in to view your watchlist.');
-        return;
-    }
-    showWatchlistView.value = true;
-};
 const openAddMovieView = () => {
     showAddMovieView.value = true;
 };

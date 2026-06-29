@@ -32,7 +32,6 @@
               </ul>
             </div>
             <div class="mt-3 d-flex flex-wrap gap-2">
-              <button v-if="auth.isUser" class="btn btn-dark" @click="addToWatchlist">Watchlist</button>
               <button v-if="auth.isAdmin" class="btn btn-dark" @click="openEditMovie">Edit</button>
               <button v-if="auth.isAdmin" class="btn btn-dark" @click="deleteMovie">Delete</button>
               <div class="d-flex flex-grow-1 justify-content-end">
@@ -64,19 +63,6 @@
     };
     
     const actors = computed(() => props.movie.actors || []);
-    
-    const addToWatchlist = async () => {
-      try{
-          console.log('Token:', auth.token);
-  
-          await axios.post('http://localhost:3000/watchlist', { movieId: props.movie.movieId }, {headers: { Authorization: `Bearer ${auth.token}` }});
-          alert('Movie added to watchlist!');
-      } catch (error) {
-          console.error('Failed to add movie to watchlist:', error.response);
-          alert(error.response?.data?.message || 'Failed to add movie to watchlist.');
-      }
-      
-    };
     
     const showEdit = ref(false);
     const openEditMovie = () => {

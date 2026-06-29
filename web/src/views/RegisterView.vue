@@ -4,9 +4,6 @@
         <h3 class="text-center mb-3">Register</h3>  
         <form @submit.prevent="handleRegister">  
           <div class="mb-3">
-            <input type="text" v-model="form.name" class="form-control" placeholder="Name" required/>
-          </div>
-          <div class="mb-3">
             <input type="email" v-model="form.email" class="form-control" placeholder="Email" required/>
           </div>
           <div class="mb-3">
